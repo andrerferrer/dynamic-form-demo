@@ -13,8 +13,7 @@ class RestaurantsController < ApplicationController
   end
 
   def create
-    restaurants_data = strong_params
-    @restaurants = Restaurant.create(restaurants_data)
+    @restaurants = Restaurant.create(restaurants_params.require(:restaurants))
     @restaurants = @restaurants.filter { |restaurant| restaurant.errors.any? }
 
     if @restaurants.empty?
@@ -43,7 +42,7 @@ class RestaurantsController < ApplicationController
     @restaurant = Restaurant.find(params[:id])
   end
 
-  def strong_params
-    params.require(:restaurants).map { |param| param.permit(Restaurant::STRONG_PARAMS) }
+  def restaurants_params
+    params.permit(restaurants: [ *Restaurant::STRONG_PARAMS ])
   end
 end
